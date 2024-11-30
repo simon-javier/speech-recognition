@@ -1,14 +1,9 @@
-% Speech Recognition Using Cross-Correlation in MATLAB
-
-% Step 1: Record and save template words as 'one.wav', 'two.wav', etc.
-
-% Step 2: Preprocess Audio
 % Load the input word for recognition
-[inputSignal, inputFs] = audioread('./Test/left.wav'); 
+[inputSignal, inputFs] = audioread('./Test/down7.wav'); 
 inputSignal = inputSignal / max(abs(inputSignal)); % Normalize input signal
 
 % List of template audio files
-templateDirectory = './templates/'; % Replace with your directory path
+templateDirectory = './templates/'; 
 fileList = dir(fullfile(templateDirectory, '**', '*.wav'));
 templateFiles = fullfile({fileList.folder}, {fileList.name});
 
@@ -44,16 +39,15 @@ if any(inputFs ~= templateFsList)
     error('Input and template audio files must have the same sampling rate.');
 end
 
-% Step 3-5: Cross-Correlation and Recognition Loop (Parallelized)
 fprintf('Starting recognition...\n');
-recognizedWord = ''; % To store the recognized word
+recognizedWord = '';    % To store the recognized word
 highestCorrelation = 0; % Initialize the highest correlation value
 
 % Pre-allocate an array to store correlation results
 correlationResults = zeros(1, length(templateFiles));
 
 % Use parallel processing to speed up the loop
-parfor i = 1:length(templateFiles) % parfor instead of for for parallel execution
+parfor i = 1:length(templateFiles)  % parfor instead of for for parallel execution
     templateSignal = templates{i};  % Use preloaded templates
     
     % Perform cross-correlation
@@ -65,15 +59,13 @@ end
 [highestCorrelation, bestMatchIndex] = max(correlationResults);
 recognizedWord = templateFiles{bestMatchIndex};
 
-% Step 4: Analyze the Results
-if highestCorrelation > 0.7 % Example threshold for recognition
+if highestCorrelation > 0.7
     [~, subdir, ~] = fileparts(fileparts(recognizedWord));
     fprintf('Recognized word: %s\n', subdir);
 else
     fprintf('No word recognized. Adjust the threshold or improve recordings.\n');
 end
 
-% Step 6: Test and Tune
 % - Test the system with various inputs.
-% - Adjust the threshold in line 30 for better results.
+% - Adjust the threshold for better results.
 
