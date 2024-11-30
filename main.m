@@ -4,7 +4,7 @@
 
 % Step 2: Preprocess Audio
 % Load the input word for recognition
-[inputSignal, inputFs] = audioread('./Test/test.wav'); 
+[inputSignal, inputFs] = audioread('./Test/left.wav'); 
 inputSignal = inputSignal / max(abs(inputSignal)); % Normalize input signal
 
 % List of template audio files
