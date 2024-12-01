@@ -14,22 +14,23 @@ if exist('templates.mat', 'file')
 else
     fprintf('Preloading templates...\n');
     % Preload and normalize templates as before
+    templates = cell(1, length(templateFiles));
+    templateFsList = zeros(1, length(templateFiles));
+     for i = 1:length(templateFiles)
+         [templateSignal, templateFs] = audioread(templateFiles{i});
+         templates{i} = templateSignal / max(abs(templateSignal)); % Normalize template
+         templateFsList(i) = templateFs;
+    
+         % Inform user about progress
+         if mod(i, 1000) == 0 || i == length(templateFiles)
+             fprintf('Loaded %d of %d templates...\n', i, length(templateFiles));
+         end
+     end
     save('templates.mat', 'templates', 'templateFsList');
 end
 
 % fprintf('Preloading templates...\n');
-% templates = cell(1, length(templateFiles));
-% templateFsList = zeros(1, length(templateFiles));
-% for i = 1:length(templateFiles)
-%     [templateSignal, templateFs] = audioread(templateFiles{i});
-%     templates{i} = templateSignal / max(abs(templateSignal)); % Normalize template
-%     templateFsList(i) = templateFs;
-%
-%     % Inform user about progress
-%     if mod(i, 1000) == 0 || i == length(templateFiles)
-%         fprintf('Loaded %d of %d templates...\n', i, length(templateFiles));
-%     end
-% end
+
 % % Save templates and sampling rates to a .mat file
 % save('templates.mat', 'templates', 'templateFsList');
 
